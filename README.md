@@ -291,7 +291,6 @@
 **Request**
 ```json
 {
-  "userid" : 1,
   "password" : "비밀번호",
   "title" : "제목",
   "contents" : "내용"
@@ -300,7 +299,6 @@
 
 | 파라미터     | 타입     | 필수여부 | 설명        |
 |----------|--------|------|-----------|
-| userid   | Long   | 필수   | 유저 고유 번호  |
 |password | String | 필수 | 유저 비밀번호 |
 | title    | String | 필수   | 스케쥴 제목    |
 | content  | String | 선택   | 스케쥴 상세 내용 |

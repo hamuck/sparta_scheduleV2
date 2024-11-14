@@ -1,10 +1,10 @@
 package com.example.spartaschedulev2.controller;
 
-import com.example.spartaschedulev2.dto.DeleteScheduleRequestDto;
-import com.example.spartaschedulev2.dto.SaveScheduleRequestDto;
-import com.example.spartaschedulev2.dto.ScheduleResponseDto;
-import com.example.spartaschedulev2.dto.UpdateScheduleRequestDto;
+import com.example.spartaschedulev2.common.Const;
+import com.example.spartaschedulev2.dto.*;
 import com.example.spartaschedulev2.service.ScheduleService;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -42,13 +42,22 @@ public class ScheduleController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ScheduleResponseDto> updateSchedule(@PathVariable Long id, @RequestBody UpdateScheduleRequestDto dto){
-        ScheduleResponseDto scheduleResponseDto = scheduleService.update(id, dto.getUserid(), dto.getPassword(), dto.getTitle(), dto.getContents());
+    public ResponseEntity<ScheduleResponseDto> updateSchedule(
+            @PathVariable Long id,
+            @RequestBody UpdateScheduleRequestDto dto,
+            HttpServletRequest request){
+
+        HttpSession session = request.getSession(false);
+        UserResponseDto userResponseDto = (UserResponseDto) session.getAttribute(Const.LOGIN_USER);
+        ScheduleResponseDto scheduleResponseDto = scheduleService.update(
+                id, userResponseDto.getUserid(), dto.getPassword(), dto.getTitle(), dto.getContents()
+        );
         return new ResponseEntity<>(scheduleResponseDto, HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Long id, @RequestBody DeleteScheduleRequestDto dto){
+    public ResponseEntity<Void> delete(
+            @PathVariable Long id, @RequestBody DeleteScheduleRequestDto dto){
         scheduleService.delete(id,dto.getPassword());
         return new ResponseEntity<>(HttpStatus.OK);
     }

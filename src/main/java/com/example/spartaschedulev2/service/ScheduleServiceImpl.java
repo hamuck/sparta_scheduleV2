@@ -54,7 +54,8 @@ public class ScheduleServiceImpl implements ScheduleService{
     }
 
     @Override
-    public void delete(Long id,String password){
+    public void delete(Long id, String password){
+
         Schedule findSchedule = scheduleRepository.findByIdOrElseThrow(id);
         userRepository.matchPassword(findSchedule.getUserId(),password);
         scheduleRepository.delete(findSchedule);

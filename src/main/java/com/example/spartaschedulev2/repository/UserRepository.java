@@ -12,9 +12,15 @@ import java.util.Optional;
 public interface UserRepository extends JpaRepository<User, Long> {
     Optional<User> findUserById(Long id);
     Optional<User> findUserByUsermailAndPassword(String usermail, String password);
+    Optional<User> findUserByUsermail(String usermail);
 
     default User findUserByIdOrElseThrow(Long id) {
         return findUserById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "존재하지 않는 유저 입니다"));
+    }
+
+    default User findUserByUsermailOrElseThrow(String usermail){
+        return findUserByUsermail(usermail)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "존재하지 않는 유저 입니다"));
     }
 
@@ -22,13 +28,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
         User user = findUserByUsermailAndPassword(usermail, password)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "이메일 또는 비밀번호가 일치하지 않습니다"));
         return user.getId();
-    }
-
-    default void matchPassword(Long userid, String password){
-        User user = findUserByIdOrElseThrow(userid);
-        if (!user.getPassword().equals(password)){
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED,"비밀번호가 일치하지 않습니다");
-        }
     }
 
 }

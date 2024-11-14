@@ -14,6 +14,14 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     default User findUserByIdOrElseThrow(Long id) {
         return findUserById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "존재하지 않는 유저 이름입니다"));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "존재하지 않는 유저 입니다"));
     }
+
+    default void matchPassword(Long userid, String password){
+        User user = findUserByIdOrElseThrow(userid);
+        if (!user.getPassword().equals(password)){
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED,"비밀번호가 일치하지 않습니다");
+        }
+    }
+
 }

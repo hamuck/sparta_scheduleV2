@@ -35,22 +35,11 @@ public class UserServiceImpl implements UserService {
     }
 
     public void deleteUser(Long id, String password) {
-        Optional<User> optionalUser = userRepository.findById(id);
+        User findUser = userRepository.findUserByIdOrElseThrow(id);
 
-        // 유저가 존재하지 않는 경우
-        if (optionalUser.isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "유저가 존재하지 않습니다.");
-        }
-
-        User findUser = optionalUser.get();
-
-        // 비밀번호가 일치하지 않는 경우
-        if (!findUser.getPassword().equals(password)) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "비밀번호가 일치하지 않습니다.");
-        }
-
-        // 유저 삭제
+        userRepository.matchPassword(id, password);
         userRepository.delete(findUser);
     }
+
 
 }

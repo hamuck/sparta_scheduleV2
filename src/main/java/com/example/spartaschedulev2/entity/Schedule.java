@@ -27,7 +27,17 @@ public class Schedule extends BaseEntity {
         this.contents = contents;
     }
 
+    public Long getUserId(){
+        User user = this.getUser();
+        return user.getId();
+    }
+
     public void setUser(User user){
         this.user = user;
+    }
+
+    public void updateSchedule(String title, String contents){
+        this.title = title;
+        this.contents = contents;
     }
 }

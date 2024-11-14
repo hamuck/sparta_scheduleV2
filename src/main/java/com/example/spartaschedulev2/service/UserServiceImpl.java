@@ -1,5 +1,6 @@
 package com.example.spartaschedulev2.service;
 
+import com.example.spartaschedulev2.dto.LoginResponseDto;
 import com.example.spartaschedulev2.dto.SignUpResponseDto;
 import com.example.spartaschedulev2.dto.UserResponseDto;
 import com.example.spartaschedulev2.entity.User;
@@ -22,6 +23,11 @@ public class UserServiceImpl implements UserService {
         User saveUser = userRepository.save(user);
 
         return new SignUpResponseDto(saveUser.getId(),saveUser.getUsername(), saveUser.getUsermail());
+    }
+
+    public LoginResponseDto login(String usermail, String password){
+        Long index = userRepository.findUserByUserMailAndPasswordForUserid(usermail, password);
+        return new LoginResponseDto(index);
     }
 
     public UserResponseDto findById(Long id){

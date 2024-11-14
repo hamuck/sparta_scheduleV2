@@ -1,10 +1,11 @@
 package com.example.spartaschedulev2.controller;
 
-import com.example.spartaschedulev2.dto.DeleteUserRequestDto;
-import com.example.spartaschedulev2.dto.SignUpRequestDto;
-import com.example.spartaschedulev2.dto.SignUpResponseDto;
-import com.example.spartaschedulev2.dto.UserResponseDto;
+import com.example.spartaschedulev2.common.Const;
+import com.example.spartaschedulev2.dto.*;
 import com.example.spartaschedulev2.service.UserService;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,6 +21,25 @@ public class UserController {
     public ResponseEntity<SignUpResponseDto> signUp(@RequestBody SignUpRequestDto dto){
         SignUpResponseDto signUpResponseDto = userService.signUp(dto.getUsername(),dto.getPassword(),dto.getUsermail());
         return new ResponseEntity<>(signUpResponseDto, HttpStatus.CREATED);
+    }
+
+    @PostMapping("/login")
+    public void login(@Valid @RequestBody LoginRequestDto dto, HttpServletRequest request){
+        LoginResponseDto responseDto = userService.login(dto.getUsermail(),dto.getPassword());
+        Long userId = responseDto.getUserid();
+
+        HttpSession session = request.getSession();
+
+        UserResponseDto loginUser = userService.findById(userId);
+        session.setAttribute(Const.LOGIN_USER,loginUser);
+    }
+
+    @PostMapping("/logout")
+    public void logout(HttpServletRequest request){
+        HttpSession session = request.getSession(false);
+        if(session != null){
+            session.invalidate();
+        }
     }
 
     @GetMapping("/{id}")

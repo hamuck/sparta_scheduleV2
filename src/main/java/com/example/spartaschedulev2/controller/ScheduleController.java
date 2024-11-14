@@ -1,5 +1,6 @@
 package com.example.spartaschedulev2.controller;
 
+import com.example.spartaschedulev2.dto.DeleteScheduleRequestDto;
 import com.example.spartaschedulev2.dto.SaveScheduleRequestDto;
 import com.example.spartaschedulev2.dto.ScheduleResponseDto;
 import com.example.spartaschedulev2.dto.UpdateScheduleRequestDto;
@@ -47,8 +48,8 @@ public class ScheduleController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Long id){
-        scheduleService.delete(id);
+    public ResponseEntity<Void> delete(@PathVariable Long id, @RequestBody DeleteScheduleRequestDto dto){
+        scheduleService.delete(id,dto.getPassword());
         return new ResponseEntity<>(HttpStatus.OK);
     }
 }

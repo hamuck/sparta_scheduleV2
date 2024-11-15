@@ -1,6 +1,7 @@
 package com.example.spartaschedulev2.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
 import lombok.Getter;
 
 @Getter
@@ -17,6 +18,7 @@ public class User extends BaseEntity{
     @Column(nullable = false)
     private String password;
 
+    @Email(message = "이메일 형식이 옳지 않습니다")
     @Column(nullable = false)
     private String usermail;
 

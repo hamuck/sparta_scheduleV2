@@ -54,4 +54,5 @@ public class UserController {
         userService.deleteUser(id, dto.getPassword());
         return new ResponseEntity<>(HttpStatus.OK);
     }
+
 }

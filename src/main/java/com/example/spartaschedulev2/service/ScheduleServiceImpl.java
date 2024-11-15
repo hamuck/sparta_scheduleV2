@@ -21,6 +21,7 @@ public class ScheduleServiceImpl implements ScheduleService{
     private final ScheduleRepository scheduleRepository;
     private final PasswordEncoder passwordEncoder;
 
+    //스케쥴 저장시 사용한다.
     @Override
     public ScheduleResponseDto save(Long userid, String title, String contents){
         User findeUser = userRepository.findUserByIdOrElseThrow(userid);
@@ -33,20 +34,21 @@ public class ScheduleServiceImpl implements ScheduleService{
         return new ScheduleResponseDto(schedule.getId(),userid,schedule.getTitle(),schedule.getContents());
     }
 
+    //스케쥴 전체 조회시 사용한다.
     @Override
     public List<ScheduleResponseDto> findAll() {
         return scheduleRepository.findAll().stream().map(ScheduleResponseDto::toDto).toList();
     }
 
+    //스케쥴을 스케쥴 고유 번호로 조회할 시 사용한다.
     @Override
     public ScheduleResponseDto findById(Long id){
         Schedule schedule = scheduleRepository.findByIdOrElseThrow(id);
-        User writer = schedule.getUser();
 
         return new ScheduleResponseDto(schedule.getId(), schedule.getUserId(), schedule.getTitle(),schedule.getContents());
     }
 
-
+    //스케쥴을 수정할 때 사용한다. 트랜잭션을 사용한다. 작성한 유저의 id와 비밀번호가 일치할 경우에 삭제한다.
     @Transactional
     @Override
     public ScheduleResponseDto update(Long id, Long userid, String password, String title, String contents) {
@@ -57,6 +59,7 @@ public class ScheduleServiceImpl implements ScheduleService{
         return new ScheduleResponseDto(schedule.getId(), schedule.getUserId(), schedule.getTitle(), schedule.getContents());
     }
 
+    //스케쥴을 삭제할 경우 사용한다. 작성한 유저의 id와 비밀번호가 일치할 경우에 삭제한다.
     @Override
     public void delete(Long id, String password){
 
@@ -65,6 +68,7 @@ public class ScheduleServiceImpl implements ScheduleService{
         scheduleRepository.delete(findSchedule);
     }
 
+    //암호화 된 비밀번호가 일치한지 확인하는 메서드
     private void matchPassword(Long userId, String password) {
         User user = userRepository.findUserByIdOrElseThrow(userId);
         if (!passwordEncoder.matches(password, user.getPassword())) {

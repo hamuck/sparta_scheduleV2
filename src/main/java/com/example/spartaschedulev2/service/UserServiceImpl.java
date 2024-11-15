@@ -21,10 +21,12 @@ public class UserServiceImpl implements UserService {
     private final ScheduleRepository scheduleRepository;
     private final PasswordEncoder passwordEncoder;
 
+    //비밀번호를 암호화할 경우 사용한다.
     private String encodingPassword(String password){
         return passwordEncoder.encode(password);
     }
 
+    //유저를 생성할 때 사용한다. 비밀번호는 암호화시켜 저장한다.
     public SignUpResponseDto signUp(String username, String password, String usermail){
         User user = new User(username, encodingPassword((password)), usermail);
 
@@ -33,15 +35,15 @@ public class UserServiceImpl implements UserService {
         return new SignUpResponseDto(saveUser.getId(),saveUser.getUsername(), saveUser.getUsermail());
     }
 
+    //로그인시 사용한다. 암호화된 비밀번호가 일치할 경우 로그인 성공
     public LoginResponseDto login(String usermail, String password) {
-        // 이메일로 사용자 조회
         User user = userRepository.findUserByUsermailOrElseThrow(usermail);
-
-        // 암호화된 비밀번호와 입력된 비밀번호 비교
         matchPassword(user.getId(),password);
-        // 로그인 성공 시, 사용자 아이디를 반환
+
         return new LoginResponseDto(user.getId());
     }
+
+    //유저를 유저 고유 번호로 조회할 때 사용한다.
     public UserResponseDto findById(Long id){
         Optional<User> optionalUser = userRepository.findById(id);
 
@@ -52,6 +54,7 @@ public class UserServiceImpl implements UserService {
         return new UserResponseDto(findUser.getId(),findUser.getUsername(), findUser.getUsermail());
     }
 
+    //유저를 삭제할 때 사용한다. 만약 유저가 작성한 스케쥴이 남아있을 경우 예외처리를 발생하고 유저 삭제를 실행하지 않는다.
     public void deleteUser(Long id, String password) {
         User findUser = userRepository.findUserByIdOrElseThrow(id);
         if (!scheduleRepository.findByUser_Id(id).isEmpty()) {
@@ -61,7 +64,7 @@ public class UserServiceImpl implements UserService {
         userRepository.delete(findUser);
     }
 
-
+    //암호화 된 비밀번호가 전달받은 비밀번호와 일치한지 확인할 때 사용한다.
     public void matchPassword(Long userid, String password) {
         User user = userRepository.findUserByIdOrElseThrow(userid);
         if (!passwordEncoder.matches(password, user.getPassword())) {

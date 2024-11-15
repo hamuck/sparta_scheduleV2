@@ -13,6 +13,7 @@ import java.io.IOException;
 @Slf4j
 public class LoginFilter implements Filter {
 
+    //로그인 필터가 적용되지 않는 목록
     private static final String[] WHITE_LIST = {"/","/users/signup","/users/login","/users/logout"};
 
     @Override
@@ -28,6 +29,7 @@ public class LoginFilter implements Filter {
 
         log.info("로그인 필터 로직 실행");
 
+        //화이트리스트에 포함되지 않고, 세션이 존재하지 않으면 로그인 예외가 발생한다.
         if (!isWhiteList(requestURI)) {
             HttpSession session = httpRequest.getSession(false);
 
@@ -38,6 +40,7 @@ public class LoginFilter implements Filter {
         chain.doFilter(request, response);
     }
 
+    //uri가 화이트리스트에 포함되어있는지 확인한다
     private boolean isWhiteList(String requestURI) {
         return PatternMatchUtils.simpleMatch(WHITE_LIST, requestURI);
     }

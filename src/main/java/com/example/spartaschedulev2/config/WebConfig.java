@@ -6,6 +6,7 @@ import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+//로그인 필터 적용시 사용하는 클래스이다.
 @Configuration
 public class WebConfig {
     @Bean

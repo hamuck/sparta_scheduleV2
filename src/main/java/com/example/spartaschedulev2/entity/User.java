@@ -2,6 +2,7 @@ package com.example.spartaschedulev2.entity;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.Pattern;
 import lombok.Getter;
 
 @Getter
@@ -15,6 +16,7 @@ public class User extends BaseEntity{
     @Column(nullable = false, unique = true)
     private String username;
 
+    @Pattern(regexp = "^[a-zA-Z0-9!@#$%^&*]{8,16}$", message = "비밀번호는 8~16자의 영문 대소문자, 숫자, 특수문자로 이루어져야 합니다.")
     @Column(nullable = false)
     private String password;
 
